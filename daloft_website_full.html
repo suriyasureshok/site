@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daloft Aerospace</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <style>
+    :root {
+      --navy: #0F1B2D;
+      --dark: #0D1117;
+      --card: #141E2E;
+      --red: #8B1E1E;
+      --redL: #B52B2B;
+      --green: #2A5C36;
+      --teal: #4EADA0;
+      --white: #FFFFFF;
+      --offW: #E8ECF0;
+      --lgray: #F0F3F7;
+      --mgray: #D0D8E4;
+      --dgray: #5A6B80;
+      --gold: #C9A84C;
+      --fontDisplay: 'Barlow Condensed', sans-serif;
+      --fontBody: 'Barlow', sans-serif;
+      --fontMono: 'JetBrains Mono', monospace;
+    }
+    body {
+      font-family: var(--fontBody);
+      background: var(--white);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    * { box-sizing: border-box; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--red); }
+    input:focus, textarea:focus, select:focus { border-color: var(--red) !important; }
+
+    #mobileMenuBtn { display: none; }
+
+    #menuBackdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1998;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #menuBackdrop.open { opacity: 1; pointer-events: auto; }
+
+    #mobileMenu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50vh;
+      z-index: 1999;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(-100%);
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+    }
+    #mobileMenu.open { transform: translateY(0); }
+
+    .mob-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .mob-header img { height: 44px; object-fit: contain; cursor: pointer; display: block; }
+
+    #mobileCloseBtn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      color: var(--offW);
+      font-size: 16px;
+      cursor: pointer;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 1;
+      transition: background 0.2s;
+    }
+    #mobileCloseBtn:hover { background: rgba(255,255,255,0.08); }
+
+    .mob-nav {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .mob-btn {
+      background: none;
+      border: none;
+      color: var(--offW);
+      padding: 14px 24px;
+      text-align: left;
+      font-family: var(--fontBody);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+      border-left: 3px solid transparent;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mob-btn:hover { background: rgba(255,255,255,0.05); color: var(--teal); border-left-color: var(--teal); }
+    .mob-btn:active { background: rgba(255,255,255,0.1); }
+
+    .mob-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .mob-cta {
+      padding: 12px 20px;
+      background: var(--red);
+      border: none;
+      color: var(--white);
+      font-family: var(--fontBody);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .mob-cta:hover { background: var(--redL); }
+
+    .page-section { padding-top: calc(90px + 36px) !important; }
+
+    @media (max-width:1024px) {
+      nav .nav-links { display: none !important; }
+      nav .nav-bar { height: 80px !important; padding: 0 25px !important; }
+      nav .nav-logo img { height: 100px !important; margin-left: 2px !important; }
+      #mobileMenuBtn { display: flex !important; align-items: center; justify-content: center; }
+
+      .hero-inner { padding: 100px 20px 60px !important; }
+      section { padding: 48px 20px !important; }
+      .page-section { padding-top: calc(80px + 32px) !important; }
+
+      .product-grid { grid-template-columns: repeat(2,1fr) !important; }
+      .product-tile { height: auto !important; }
+
+      .contact-grid { grid-template-columns: 1fr !important; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+      .footer-bottom { flex-wrap: wrap !important; gap: 8px !important; }
+    }
+
+    @media (max-width:600px) {
+      nav .nav-bar { height: 70px !important; padding: 0 20px !important; }
+      nav .nav-logo img { height: 70px !important; margin-left: -8px !important; }
+
+      .hero-inner { padding: 80px 16px 48px !important; }
+      section { padding: 32px 16px !important; }
+      .page-section { padding-top: calc(70px + 24px) !important; }
+
+      .product-grid { grid-template-columns: 1fr !important; }
+      .product-tile img { height: 180px !important; object-fit: cover !important; }
+
+      .form-row { grid-template-columns: 1fr !important; }
+
+      .footer-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+      .footer-logo img { height: 80px !important; }
+      .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+
+      img { max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const PRODUCTS = {
+      cb1: {
+        name: "CROP BIRD One",
+        tag: "Small & Medium Category UAVs · Agricultural · VLOS Logistics",
+        color: "#8B1E1E",
+        heroDesc: "Agricultural autopilot for small and medium class UAVs — dual-redundant flight controllers with hard real-time EKF sensor fusion and spray load compensation. Full Daloft firmware stack — no ArduPilot, no PX4.",
+        archTitle: "Architecture Highlights",
+        highlights: [
+          { title: "Dual-Redundant Flight Controller", desc: "Primary + secondary flight controllers with automated failover — no single point of failure in the flight-critical path. Independent power domains cross-monitored via CAN bus heartbeat. Actuator and sensor health continuously validated against expected model output." },
+          { title: "Spray Load Compensation", desc: "Real-time payload mass estimation via thrust-to-weight feedback from the state estimator. Control gains automatically adapted as tank empties — maintaining consistent attitude authority and ±0.3 m altitude hold accuracy throughout the spray mission." },
+          { title: "GPS Waypoint Mission & RTH", desc: "GPS waypoint mission execution, terrain-following with rangefinder integration into the state estimation loop, automatic return-to-home on link loss or low battery, and safe-mode logic on sensor fault." },
+        ],
+        capabilities: [
+          "Hard real-time EKF sensor fusion — deterministic execution at fixed rate",
+          "Dual GNSS / barometric altitude-fused state estimation",
+          "Precision spray path control — configurable coverage width",
+          "Farmland NDVI mapping and field surveying support",
+          "CAN bus, UART, GPS1/GPS2, TELE interfaces",
+          "Firmware fully owned by Daloft — full traceability",
+          "Terrain-following via rangefinder integration",
+          "Automatic return-to-home with safe-mode logic",
+        ],
+        usecases: ["Precision Agri Spraying","NDVI Mapping","Field Surveying","Light Payload Logistics","Terrain-Following"],
+      },
+      cb2: {
+        name: "CROP BIRD 2",
+        tag: "Nano & Micro Category UAVs · Compact Autonomous Systems",
+        color: "#8B1E1E",
+        heroDesc: "Miniaturised flight controller for nano and micro class UAVs — retaining Daloft's full hard real-time sensor fusion pipeline, EKF-based state estimator, and model-derived control laws at extreme SWaP constraints.",
+        archTitle: "Architecture Highlights",
+        highlights: [
+          { title: "SWaP-Optimised Hardware", desc: "Ultra-compact PCB form factor. Full Daloft sensor fusion and control firmware ported to resource-constrained embedded MCU — maintaining hard real-time determinism at reduced compute budget without sacrificing estimation quality." },
+          { title: "Miniaturised EKF State Estimator", desc: "Full 6-DOF state estimation maintained on nano-class hardware — position, velocity, attitude quaternion, and sensor bias estimation running at hard real-time fixed rate with no performance degradation versus larger platforms." },
+          { title: "Indoor & Confined-Space Navigation", desc: "Optical flow velocity aiding integrated into EKF measurement update for GPS-denied indoor operations. Ultrasonic rangefinder provides accurate altitude hold in low-ceiling environments." },
+        ],
+        capabilities: [
+          "Full Daloft EKF pipeline — same quality as larger platforms",
+          "Optical flow + ultrasonic aiding for GPS-denied indoor flight",
+          "Hard real-time firmware on SWaP-constrained MCU",
+          "Attitude control tuned for low-inertia nano-class dynamics",
+          "Compact connector interface — power, RC, motor outputs",
+          "Daloft proprietary firmware — full source traceability",
+          "No ArduPilot or PX4 dependency",
+          "Suitable for R&D and research platform deployment",
+        ],
+        usecases: ["Indoor Inspection","Confined-Space Mapping","R&D Platform","Nano Surveillance","Research UAVs"],
+      },
+      cb3: {
+        name: "CROP BIRD 3",
+        tag: "Safety-Critical · BVLOS · GPS-Denied · Logistics",
+        color: "#8B1E1E",
+        heroDesc: "DO-178C aligned, BVLOS-ready INS navigation system — tightly-coupled Error-State Kalman Filter, multi-source aiding, embedded FDIR logic, and full certification documentation for DGCA regulatory submission.",
+        archTitle: "INS Synergistic Architecture",
+        highlights: [
+          { title: "Strapdown INS Core", desc: "Daloft's hard real-time strapdown algorithm translates IMU accelerations and angular rates into navigation-frame position and velocity through quaternion-based attitude propagation — without dependence on any inertial navigation library." },
+          { title: "Error-State Kalman Filter", desc: "Tightly-coupled error-state EKF continuously estimates and corrects INS drift — tracking position error, velocity error, tilt, gyro bias, and accelerometer bias states using all available aiding sources including GPS, baro, mag, and optical flow." },
+          { title: "Safety-Critical FDIR Architecture", desc: "DO-178C aligned software lifecycle, ARP4754A system safety, DAL classification A–D per failure condition criticality. FDIR embedded: autonomous response to sensor failures, actuator anomalies, power faults. Full SIL/HIL validation with DGCA documentation." },
+        ],
+        capabilities: [
+          "GPS-denied navigation — validated >5 min autonomous flight without GNSS",
+          "Anti-jam / anti-spoof resilience — RF-agnostic navigation",
+          "DO-178C aligned firmware lifecycle — requirements traceability",
+          "ARP4754A system safety — hazard identification, FMEA",
+          "DO-254 hardware design assurance path available",
+          "DAL-A through DAL-D classification per criticality",
+          "FDIR embedded — autonomous fault response",
+          "Full DGCA BVLOS regulatory documentation package",
+        ],
+        usecases: ["BVLOS Cargo Delivery","GPS-Denied Ops","Last-Mile Logistics","Border Surveillance","Critical Infrastructure"],
+      },
+      fch: {
+        name: "Flight Control Hardware",
+        tag: "Hardware Platform · Custom Firmware Integration · OEM",
+        color: "#2A5C36",
+        heroDesc: "DO-254 compliant avionics hardware platform for OEM manufacturers, defense integrators, and research institutions deploying application-specific flight control firmware. No software bundled — full hardware ownership.",
+        archTitle: "Hardware Architecture",
+        highlights: [
+          { title: "Redundant MCU Architecture", desc: "Dual-processor design with primary and monitoring MCU. Independent power domains, independent sensor buses. Hardware watchdog and cross-validation logic for safety-critical deployment. DAL-compliant component selection with full Bill of Materials traceability." },
+          { title: "Rich Sensor Interface Layer", desc: "Dual IMU (6-axis accel + gyro), dual GNSS, barometric altimeter, magnetometer, optical flow, rangefinder — all connected through isolated, filtered sensor interfaces. Firmware-accessible via documented hardware abstraction layer." },
+          { title: "Flexible I/O & Communication", desc: "CAN bus, UART ×3, SPI, I2C, PWM motor outputs ×8, RC input, USB, TELE port. Custom pin mapping configurable during integration. MIL-spec connector options available for defense deployments." },
+        ],
+        capabilities: [
+          "DO-254 hardware design assurance documentation available",
+          "Dual redundant MCU with hardware watchdog",
+          "Dual 6-axis IMU — vibration-isolated, thermal-stabilised",
+          "Dual GNSS — GPS / GLONASS / Galileo + RTK support",
+          "8× PWM motor outputs + RC input + TELE",
+          "Documented HAL for custom firmware integration",
+          "Full BOM, schematic, interface control document",
+          "MIL-spec connector options for defense deployments",
+        ],
+        usecases: ["OEM Integration","Defense Platforms","Research Institutions","Startup Autopilot Dev"],
+      },
+    };
+
+    const IMG_MAP = {
+      "CROP BIRD One": "assets/crop%20bird%20final.png",
+      "CROP BIRD 2": "assets/d%20flight%20final%20(1).png",
+      "CROP BIRD 3": "assets/tac%20final%20(1).png",
+      "Flight Control Hardware": "assets/mission%20final%20(1).png",
+    };
+
+    const PAGES = ["home","products","about","get_in_touch"];
+    let currentPage = "home";
+
+    function renderNav() {
+      return `
+        <nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,27,45,0.95);backdrop-filter:blur(12px);font-family:var(--fontBody);">
+          <div class="nav-bar" style="max-width:1200px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:90px;">
+            <div class="nav-logo" style="cursor:pointer;display:flex;align-items:center;" onclick="goPage('home')">
+              <img src="assets/daloft_trans.png" alt="Daloft Aerospace" style="height:120px;object-fit:contain;display:block;margin-left:-52px;" />
+            </div>
+            <div class="nav-links" style="display:flex;gap:4px;align-items:center;">
+              <button onclick="goPage('home')" style="background:none;border:none;cursor:pointer;padding:8px 16px;font-family:var(--fontBody);font-size:13px;font-weight:600;color:var(--offW);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;">Home</button>
+              <button onclick="goPage('products')" style="background:none;border:none;cursor:pointer;padding:8px 16px;font-family:var(--fontBody);font-size:13px;font-weight:600;color:var(--offW);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;">Products</button>
+              <button onclick="goPage('about')" style="background:none;border:none;cursor:pointer;padding:8px 16px;font-family:var(--fontBody);font-size:13px;font-weight:600;color:var(--offW);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;">About</button>
+              <button onclick="goPage('get_in_touch')" style="margin-left:8px;padding:8px 20px;background:var(--red);border:none;color:var(--white);font-family:var(--fontBody);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Get In Touch</button>
+            </div>
+            <button id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Open menu" style="width:53px;height:53px;background:none;border:1px solid rgba(255,255,255,0.18);border-radius:6px;color:var(--offW);cursor:pointer;font-size:28px;line-height:1;">&#9776;</button>
+          </div>
+        </nav>
+        <div id="menuBackdrop" onclick="toggleMobileMenu()"></div>
+        <div id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+          <div class="mob-header">
+            <img src="assets/daloft_trans.png" alt="Daloft Aerospace" onclick="goPage('home')" />
+            <button id="mobileCloseBtn" onclick="toggleMobileMenu()" aria-label="Close menu">&#10005;</button>
+          </div>
+          <nav class="mob-nav">
+            <button class="mob-btn" onclick="goPage('home')">Home</button>
+            <button class="mob-btn" onclick="goPage('products')">Products</button>
+            <button class="mob-btn" onclick="goPage('about')">About</button>
+          </nav>
+          <div class="mob-footer">
+            <button class="mob-cta" onclick="goPage('get_in_touch')">Get In Touch</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function goPage(page) {
+      closeMenu(function() {
+        currentPage = page;
+        renderApp();
+        window.scrollTo(0, 0);
+      });
+    }
+
+    function goToTechnology() {
+      currentPage = 'home';
+      renderApp();
+      setTimeout(() => {
+        const el = document.getElementById('tech');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+
+    function renderHome() {
+      return `
+        <section style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('assets/drone_sp.png') center/cover no-repeat, linear-gradient(135deg,var(--dark) 80%,var(--navy) 100%);position:relative;overflow:hidden;">
+          <div class="hero-inner" style="max-width:1200px;margin:0 auto;padding:120px 24px 80px;position:relative;width:100%;">
+            <div style="font-family:var(--fontMono);font-size:11px;color:var(--teal);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;">IIT Madras Incubated · Founded 2022 · Chennai, India</div>
+            <h1 style="font-family:var(--fontDisplay);font-size:clamp(52px,10vw,100px);font-weight:800;color:var(--white);margin:0;letter-spacing:4px;line-height:0.9;">DALOFT</h1>
+            <div style="font-family:var(--fontDisplay);font-size:clamp(20px,4vw,38px);color:var(--teal);letter-spacing:10px;margin-bottom:24px;font-weight:400;">AEROSPACE</div>
+            <div style="width:80px;height:4px;background:var(--red);margin-bottom:28px;"></div>
+            <p style="font-family:var(--fontBody);font-size:clamp(16px,2vw,20px);color:var(--mgray);max-width:680px;line-height:1.8;margin-bottom:16px;font-weight:300;">Flight Control System Design & Manufacturing</p>
+            <p style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);max-width:600px;line-height:1.8;margin-bottom:40px;">India's first fully indigenous safety-critical UAV avionics company — developing hard real-time sensor fusion, 6-DOF state estimation, and certified control systems entirely in-house.</p>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+              <button onclick="goPage('products')" style="padding:12px 28px;background:var(--red);color:var(--white);font-family:var(--fontBody);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;">Explore Products</button>
+              <button onclick="goToTechnology()" style="padding:12px 28px;border:2px solid var(--white);background:transparent;color:var(--white);font-family:var(--fontBody);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;">Our Technology</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="tech" style="padding:60px 24px;background:var(--white);">
+          <div style="max-width:1200px;margin:0 auto;">
+            <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">Full-Stack Flight Control Architecture</h1>
+            <p style="font-family:var(--fontBody);font-size:16px;color:var(--dgray);margin-bottom:32px;">Every layer — from PCB hardware to control law — designed, verified, and owned by Daloft. No open-source flight stacks. No third-party libraries. No foreign dependency.</p>
+            <h2 style="font-family:var(--fontDisplay);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:16px;">6-Layer In-House Architecture</h2>
+            <ul style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);margin-bottom:32px;">
+              <li>Hardware Layer: Custom PCB, redundant MCU, DAL-compliant components</li>
+              <li>Signal Processing: Hard real-time IMU filtering, vibration rejection, sensor health</li>
+              <li>Sensor Fusion: Daloft EKF — deterministic, no third-party filter libraries</li>
+              <li>Sate Estimation: 6-DOF: position, velocity, attitude quaternion, biases</li>
+              <li>Flight Dynamics Model: Nonlinear 6-DOF equations of motion, system identification</li>
+              <li>Control System: Cascaded PID + LQR, model-derived gains, gain-scheduled</li>
+            </ul>
+            <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:700;color:var(--navy);margin-bottom:16px;">Key Features</h2>
+            <ul style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);">
+              <li>Hard Real-Time Sensor Fusion</li>
+              <li>6-DOF State Estimation</li>
+              <li>DO-178C Aligned</li>
+              <li>GPS-Denied INS Navigation</li>
+              <li>Zero Library Dependency</li>
+            </ul>
+          </div>
+        </section>
+
+        <section style="background:var(--lgray);padding:60px 24px;">
+          <div style="max-width:1200px;margin:0 auto;">
+            <h2 style="font-family:var(--fontDisplay);font-size:32px;font-weight:800;color:var(--navy);margin-bottom:32px;">Flight Control Systems</h2>
+            <div class="product-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--mgray);">
+              ${Object.values(PRODUCTS).map((p, i, arr) => `
+                <div class="product-tile" style="cursor:pointer;background:var(--white);border-top:4px solid ${p.color};padding:28px;display:flex;flex-direction:column;height:auto;${i < arr.length - 1 ? 'border-right:1px solid var(--mgray);' : ''}" onclick="goProduct('${p.name}')">
+                  ${IMG_MAP[p.name] ? '<img src="' + IMG_MAP[p.name] + '" style="width:100%;height:160px;object-fit:cover;margin-bottom:16px;flex-shrink:0;display:block;border-radius:5px;" />' : ''}
+                  <span style="display:inline-block;padding:3px 10px;background:${p.color};font-family:var(--fontMono);font-size:10px;font-weight:600;color:var(--white);letter-spacing:1px;margin-right:6px;margin-bottom:4px;">${p.tag.split('·')[0]}</span>
+                  <h3 style="font-family:var(--fontDisplay);font-size:24px;font-weight:800;color:var(--navy);margin:16px 0 12px;letter-spacing:1px;">${p.name}</h3>
+                  <p style="font-family:var(--fontBody);font-size:14px;color:var(--dgray);line-height:1.7;margin:0 0 20px;overflow:visible;">${p.heroDesc}</p>
+                  <span style="font-family:var(--fontBody);font-size:12px;font-weight:700;color:${p.color};letter-spacing:1px;text-transform:uppercase;">Learn More →</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function goProduct(name) {
+      for (const key in PRODUCTS) {
+        if (PRODUCTS[key].name === name) {
+          currentPage = key;
+          renderApp();
+          window.scrollTo(0,0);
+          break;
+        }
+      }
+    }
+
+    function renderProductPage(product) {
+      return `
+        <section class="page-section" style="padding:60px 24px;background:var(--white);">
+          <div style="max-width:1200px;margin:0 auto;">
+            <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">${product.name}</h1>
+            <div style="font-family:var(--fontMono);font-size:13px;color:${product.color};margin-bottom:20px;">${product.tag}</div>
+            <p style="font-family:var(--fontBody);font-size:16px;color:var(--dgray);margin-bottom:32px;">${product.heroDesc}</p>
+            <h2 style="font-family:var(--fontDisplay);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:16px;">${product.archTitle}</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;">
+              ${product.highlights.map(h => `
+                <div style="border-top:4px solid ${product.color};padding:28px;background:var(--lgray);">
+                  <h3 style="font-family:var(--fontDisplay);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:12px;letter-spacing:1px;">${h.title}</h3>
+                  <p style="font-family:var(--fontBody);font-size:14px;color:var(--dgray);line-height:1.7;margin:0;">${h.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+            <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:700;color:var(--navy);margin-top:40px;margin-bottom:16px;">Key Technical Capabilities</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;">
+              ${product.capabilities.map(c => `
+                <div style="display:flex;gap:14px;padding:18px 20px;background:rgba(255,255,255,0.3);border-left:2px solid ${product.color};">
+                  <div style="width:6px;height:6px;background:${product.color};margin-top:6px;flex-shrink:0;"></div>
+                  <span style="font-family:var(--fontBody);font-size:14px;color:var(--dgray);line-height:1.6;">${c}</span>
+                </div>
+              `).join('')}
+            </div>
+            <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:700;color:var(--navy);margin-top:40px;margin-bottom:16px;">Use Cases</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              ${product.usecases.map(u => `<span style="padding:6px 16px;background:${product.color};font-family:var(--fontMono);font-size:11px;color:var(--white);letter-spacing:1px;">${u}</span>`).join('')}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProducts() {
+      return `
+        <section class="page-section" style="padding:60px 24px;background:var(--lgray);">
+          <div style="max-width:1200px;margin:0 auto;">
+            <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">Flight Control Systems</h1>
+            <div style="margin-bottom:32px;">
+              <h3 style="font-family:var(--fontDisplay);font-size:20px;color:var(--navy);font-weight:800;margin:0 0 12px;">Proprietary Firmware</h3>
+              <div class="product-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                ${Object.values(PRODUCTS).filter(p => p.name !== 'Flight Control Hardware').map(p => `
+                    <div class="product-tile" style="background:var(--white);border-left:5px solid ${p.color};padding:28px;cursor:pointer;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;height:440px;" onclick="goProduct('${p.name}')">
+                    ${IMG_MAP[p.name] ? '<img src="' + IMG_MAP[p.name] + '" style="width:100%;height:160px;object-fit:cover;margin-bottom:16px;display:block;flex-shrink:0;border-radius:5px;" />' : ''}
+                    <span style="display:inline-block;padding:3px 10px;background:${p.color};font-family:var(--fontMono);font-size:10px;font-weight:600;color:var(--white);letter-spacing:1px;margin-right:6px;margin-bottom:4px;">${p.tag.split('·')[0]}</span>
+                    <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:800;color:var(--navy);margin:16px 0 8px;letter-spacing:1px;">${p.name}</h2>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;">
+                      ${p.usecases.map(u => `<span style='padding:3px 10px;border:1px solid ${p.color};font-family:var(--fontMono);font-size:10px;color:var(--dgray);'>${u}</span>`).join('')}
+                    </div>
+                    <br>
+                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View ${p.name}</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-family:var(--fontDisplay);font-size:20px;color:var(--navy);font-weight:800;margin:24px 0 12px;">Customized Firmware</h3>
+              <div class="product-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                ${Object.values(PRODUCTS).filter(p => p.name === 'Flight Control Hardware').map(p => `
+                  <div class="product-tile" style="background:var(--white);border-left:5px solid ${p.color};padding:28px;cursor:pointer;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;height:420px;" onclick="goProduct('${p.name}')">
+                    ${IMG_MAP[p.name] ? '<img src="' + IMG_MAP[p.name] + '" style="width:100%;height:160px;object-fit:cover;margin-bottom:16px;display:block;flex-shrink:0;border-radius:5px;" />' : ''}
+                    <span style="display:inline-block;padding:3px 10px;background:${p.color};font-family:var(--fontMono);font-size:10px;font-weight:600;color:var(--white);letter-spacing:1px;margin-right:6px;margin-bottom:4px;">${p.tag.split('·')[0]}</span>
+                    <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:800;color:var(--navy);margin:16px 0 8px;letter-spacing:1px;">${p.name}</h2>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;">
+                      ${p.usecases.map(u => `<span style='padding:3px 10px;border:1px solid ${p.color};font-family:var(--fontMono);font-size:10px;color:var(--dgray);'>${u}</span>`).join('')}
+                    </div>
+                    <br>
+                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View ${p.name}</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderAbout() {
+      return `
+        <section class="page-section" style="padding:60px 24px;background:var(--white);">
+          <div style="max-width:1200px;margin:0 auto;">
+            <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">About Daloft Aerospace</h1>
+            <p style="font-family:var(--fontBody);font-size:16px;color:var(--dgray);margin-bottom:32px;">India's first fully indigenous safety-critical UAV avionics company — founded 2022, incubated at IIT Madras.</p>
+            <h2 style="font-family:var(--fontDisplay);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:16px;">Our Story</h2>
+            <p style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);margin-bottom:20px;">Daloft Aerospace was founded in 2022 at IIT Madras Research Park, Chennai, with a single focused mandate: to design and manufacture safety-critical UAV flight control systems entirely in India, without dependence on imported or open-source avionics components.</p>
+            <p style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);">We develop the complete avionics stack — from hardware-layer PCB design and embedded firmware to hard real-time sensor fusion, state estimation, 6-DOF mathematical modelling, and control systems — entirely in-house, with full firmware traceability for platform-level certification.</p>
+            <h2 style="font-family:var(--fontDisplay);font-size:24px;font-weight:700;color:var(--navy);margin-bottom:16px;">Leadership</h2>
+            <ul style="font-family:var(--fontBody);font-size:15px;color:var(--dgray);">
+              <li>Dinesh Kumar Thangaraj – Founder & CEO</li>
+              <li>Dr. Nandan K. Sinha – Co-Founder & Advisor</li>
+              <li>Narayana Nanda Neeraj – Co-Founder & CTO</li>
+              <li>Prof. Aasish C – Avionics Advisor</li>
+            </ul>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderContact() {
+      return `
+        <section class="page-section" style="padding:60px 24px;background:var(--lgray);">
+          <div class="contact-grid" style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:3px;">
+            <div style="background:var(--navy);padding:40px;">
+              <div style="font-family:var(--fontDisplay);font-size:28px;font-weight:800;color:var(--white);margin-bottom:32px;letter-spacing:1px;">Daloft Aerospace</div>
+              <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <div style="font-family:var(--fontMono);font-size:10px;color:var(--teal);letter-spacing:2px;margin-bottom:4px;">PHONE</div>
+                <div style="font-family:var(--fontBody);font-size:14px;color:var(--offW);">+91 79044 47186</div>
+              </div>
+              <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <div style="font-family:var(--fontMono);font-size:10px;color:var(--teal);letter-spacing:2px;margin-bottom:4px;">EMAIL</div>
+                <div style="font-family:var(--fontBody);font-size:14px;color:var(--offW);">business@daloftaerospace.in</div>
+              </div>
+              <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <div style="font-family:var(--fontMono);font-size:10px;color:var(--teal);letter-spacing:2px;margin-bottom:4px;">WEBSITE</div>
+                <div style="font-family:var(--fontBody);font-size:14px;color:var(--offW);">www.daloftaerospace.in</div>
+              </div>
+              <div style="margin-bottom:24px;">
+                <div style="font-family:var(--fontMono);font-size:10px;color:var(--teal);letter-spacing:2px;margin-bottom:4px;">ADDRESS</div>
+                <div style="font-family:var(--fontBody);font-size:14px;color:var(--offW);">IIT Madras Research Park, Tharamani, Chennai – 600113</div>
+              </div>
+              <div style="margin-top:32px;padding:16px 20px;background:var(--red);">
+                <div style="font-family:var(--fontMono);font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:2px;">IIT MADRAS INCUBATED</div>
+              </div>
+            </div>
+            <div style="background:var(--white);padding:48px;">
+              <h2 style="font-family:var(--fontDisplay);font-size:30px;font-weight:800;color:var(--navy);margin-bottom:32px;letter-spacing:1px;">Submit Inquiry</h2>
+              <form onsubmit="event.preventDefault();alert('Inquiry Submitted!');">
+                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                  <div>
+                    <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">FIRST NAME</label>
+                    <input type="text" style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;box-sizing:border-box;" />
+                  </div>
+                  <div>
+                    <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">LAST NAME</label>
+                    <input type="text" style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;box-sizing:border-box;" />
+                  </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                  <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">EMAIL ADDRESS *</label>
+                  <input type="email" style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;box-sizing:border-box;" required />
+                </div>
+                <div style="margin-bottom:16px;">
+                  <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">ORGANISATION / COMPANY</label>
+                  <input type="text" style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;box-sizing:border-box;" />
+                </div>
+                <div style="margin-bottom:16px;">
+                  <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">INQUIRY CATEGORY</label>
+                  <select style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;background:var(--white);box-sizing:border-box;">
+                    <option value="">Select category...</option>
+                    <option>General Inquiry</option>
+                    <option>CROP BIRD One — Small & Medium UAVs</option>
+                    <option>CROP BIRD 2 — Nano & Micro UAVs</option>
+                    <option>CROP BIRD 3 — Safety-Critical / BVLOS / GPS-Denied</option>
+                    <option>Flight Control Hardware — Custom Firmware Platform</option>
+                    <option>Partnership / Investment</option>
+                  </select>
+                </div>
+                <div style="margin-bottom:28px;">
+                  <label style="font-family:var(--fontMono);font-size:11px;color:var(--dgray);display:block;margin-bottom:6px;letter-spacing:1px;">MESSAGE</label>
+                  <textarea rows="5" style="width:100%;padding:10px 12px;border:1px solid var(--mgray);font-family:var(--fontBody);font-size:14px;color:var(--navy);outline:none;resize:vertical;box-sizing:border-box;"></textarea>
+                </div>
+                <button type="submit" style="padding:12px 28px;background:var(--red);color:var(--white);font-family:var(--fontBody);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;">Submit Inquiry</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderFooter() {
+      return `
+        <footer style="background:var(--dark);border-top:3px solid var(--red);padding:60px 24px 32px;font-family:var(--fontBody);">
+          <div style="max-width:1200px;margin:0 auto;">
+            <div class="footer-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr 2fr;gap:40px;margin-bottom:48px;">
+              <div class="footer-logo">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                  <img src="assets/daloft_trans.png" alt="Daloft Aerospace" style="height:150px;object-fit:contain;display:block;" />
+                </div>
+                <p style="font-size:13px;color:var(--dgray);line-height:1.7;max-width:280px;">Flight Control System Design & Manufacturing. IIT Madras Incubated.</p>
+                <div style="margin-top:16px;display:inline-block;padding:4px 12px;background:var(--green);font-size:10px;font-weight:700;color:var(--white);letter-spacing:2px;">IIT MADRAS INCUBATED</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Products</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD One</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD 2</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD 3</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Flight Control Hardware</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Company</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">About</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Technology</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Contact</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Contact</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">+91 79044 47186</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">business@daloftaerospace.in</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">www.daloftaerospace.in</div>
+                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">IIT Madras Research Park, Chennai</div>
+              </div>
+            </div>
+            <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:12px;color:var(--dgray);">© 2025 Daloft Aerospace Private Limited · All Rights Reserved</span>
+              <span style="font-size:12px;color:var(--dgray);">Made in India</span>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+
+    function renderApp() {
+      let html = renderNav();
+      if (PAGES.includes(currentPage)) {
+        if (currentPage === "home") html += renderHome();
+        else if (currentPage === "products") html += renderProducts();
+        else if (currentPage === "technology") html += renderTechnology();
+        else if (currentPage === "about") html += renderAbout();
+        else if (currentPage === "get_in_touch") html += renderContact();
+      } else if (PRODUCTS[currentPage]) {
+        html += renderProductPage(PRODUCTS[currentPage]);
+      }
+      html += renderFooter();
+      document.getElementById('app').innerHTML = html;
+    }
+
+    window.goPage = goPage;
+    window.goProduct = goProduct;
+    function closeMenu(then) {
+      const m = document.getElementById('mobileMenu');
+      const b = document.getElementById('menuBackdrop');
+      if (!m) { if (then) then(); return; }
+      m.classList.remove('open');
+      if (b) b.classList.remove('open');
+      document.body.style.overflow = '';
+      if (then) setTimeout(then, 340);
+    }
+    window.toggleMobileMenu = function() {
+      const m = document.getElementById('mobileMenu');
+      const b = document.getElementById('menuBackdrop');
+      if (!m) return;
+      if (m.classList.contains('open')) {
+        closeMenu();
+      } else {
+        m.classList.add('open');
+        if (b) b.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+    renderApp();
+  </script>
+</body>
+</html>
