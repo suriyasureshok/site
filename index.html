@@ -163,7 +163,7 @@
 
       .contact-grid { grid-template-columns: 1fr !important; }
 
-      .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr 1fr !important; gap: 24px !important; }
       .footer-bottom { flex-wrap: wrap !important; gap: 8px !important; }
     }
 
@@ -180,12 +180,17 @@
       .product-tile img { height: 180px !important; object-fit: cover !important; }
 
       .form-row { grid-template-columns: 1fr !important; }
+      .footer-grid { display:grid !important; grid-template-columns:1fr 1fr 1fr !important; gap:8px 4px !important; }
+      .footer-logo { grid-column:1 / -1 !important; display:flex !important; align-items:center !important; gap:12px !important; margin-bottom:4px !important; }
+      .footer-logo img { height:60px !important; }
+      .footer-logo p { font-size:11px !important; margin:0 !important; max-width:none !important; }
+      .footer-grid > div:not(.footer-logo) { min-width:0 !important; }
+      .footer-grid > div:not(.footer-logo) > div { font-size:11px !important; }
+      .footer-grid > div:not(.footer-logo) > div:first-child { font-size:10px !important; letter-spacing:1px !important; margin-bottom:10px !important; }
 
-      .footer-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
-      .footer-logo img { height: 80px !important; }
-      .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+      .product-detail-img { width:80% !important; margin:0 auto 24px !important; }
 
-      img { max-width: 100% !important; }
+      img { max-width:100% !important; }
     }
   </style>
 </head>
@@ -424,12 +429,21 @@
     }
 
     function renderProductPage(product) {
+      const imgSrc = IMG_MAP[product.name] || '';
       return `
         <section class="page-section" style="padding:60px 24px;background:var(--white);">
           <div style="max-width:1200px;margin:0 auto;">
-            <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">${product.name}</h1>
-            <div style="font-family:var(--fontMono);font-size:13px;color:${product.color};margin-bottom:20px;">${product.tag}</div>
-            <p style="font-family:var(--fontBody);font-size:16px;color:var(--dgray);margin-bottom:32px;">${product.heroDesc}</p>
+            <button onclick="goPage('products')" style="display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--mgray);padding:7px 16px;font-family:var(--fontBody);font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;border-radius:4px;margin-bottom:28px;letter-spacing:0.5px;transition:background 0.2s;" onmouseover="this.style.background='var(--lgray)'" onmouseout="this.style.background='none'">&#8592; Back to Products</button>
+            <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-bottom:40px;">
+              ${imgSrc ? `<div class="product-detail-img" style="flex:0 0 auto;width:clamp(160px,22%,260px);">
+                <img src="${imgSrc}" alt="${product.name}" style="width:100%;border-radius:8px;object-fit:cover;display:block;border:1px solid var(--mgray);" />
+              </div>` : ''}
+              <div style="flex:1;min-width:160px;">
+                <h1 style="font-family:var(--fontDisplay);font-size:36px;font-weight:800;color:var(--navy);margin-bottom:16px;">${product.name}</h1>
+                <div style="font-family:var(--fontMono);font-size:13px;color:${product.color};margin-bottom:20px;">${product.tag}</div>
+                <p style="font-family:var(--fontBody);font-size:16px;color:var(--dgray);margin-bottom:0;">${product.heroDesc}</p>
+              </div>
+            </div>
             <h2 style="font-family:var(--fontDisplay);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:16px;">${product.archTitle}</h2>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;">
               ${product.highlights.map(h => `
@@ -474,7 +488,7 @@
                       ${p.usecases.map(u => `<span style='padding:3px 10px;border:1px solid ${p.color};font-family:var(--fontMono);font-size:10px;color:var(--dgray);'>${u}</span>`).join('')}
                     </div>
                     <br>
-                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View ${p.name}</button>
+                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View More →</button>
                   </div>
                 `).join('')}
               </div>
@@ -492,7 +506,7 @@
                       ${p.usecases.map(u => `<span style='padding:3px 10px;border:1px solid ${p.color};font-family:var(--fontMono);font-size:10px;color:var(--dgray);'>${u}</span>`).join('')}
                     </div>
                     <br>
-                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View ${p.name}</button>
+                    <button onclick="goProduct('${p.name}')" style="font-family:var(--fontBody);font-size:13px;font-weight:700;color:${p.color};background:none;border:none;cursor:pointer;">View More →</button>
                   </div>
                 `).join('')}
               </div>
@@ -603,27 +617,26 @@
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
                   <img src="assets/daloft_trans.png" alt="Daloft Aerospace" style="height:150px;object-fit:contain;display:block;" />
                 </div>
-                <p style="font-size:13px;color:var(--dgray);line-height:1.7;max-width:280px;">Flight Control System Design & Manufacturing. IIT Madras Incubated.</p>
+                <p style="font-size:13px;color:var(--dgray);line-height:1.7;max-width:280px;">Flight Control System Design &amp; Manufacturing. IIT Madras Incubated.</p>
                 <div style="margin-top:16px;display:inline-block;padding:4px 12px;background:var(--green);font-size:10px;font-weight:700;color:var(--white);letter-spacing:2px;">IIT MADRAS INCUBATED</div>
               </div>
               <div>
                 <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Products</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD One</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD 2</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">CROP BIRD 3</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Flight Control Hardware</div>
+                <div onclick="goProduct('CROP BIRD One')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">CROP BIRD One</div>
+                <div onclick="goProduct('CROP BIRD 2')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">CROP BIRD 2</div>
+                <div onclick="goProduct('CROP BIRD 3')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">CROP BIRD 3</div>
+                <div onclick="goProduct('Flight Control Hardware')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">Flight Control Hardware</div>
               </div>
               <div>
                 <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Company</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">About</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Technology</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;">Contact</div>
+                <div onclick="goPage('about')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">About</div>
+                <div onclick="goPage('get_in_touch')" style="font-size:13px;color:var(--dgray);margin-bottom:8px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">Contact</div>
               </div>
               <div>
                 <div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Contact</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">+91 79044 47186</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">business@daloftaerospace.in</div>
-                <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">www.daloftaerospace.in</div>
+                <a href="tel:+917904447186" style="display:block;font-size:13px;color:var(--dgray);margin-bottom:8px;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">+91 79044 47186</a>
+                <a href="mailto:business@daloftaerospace.in" style="display:block;font-size:13px;color:var(--dgray);margin-bottom:8px;text-decoration:none;transition:color 0.2s;word-break:break-all;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">business@daloftaerospace.in</a>
+                <a href="https://www.daloftaerospace.in" target="_blank" style="display:block;font-size:13px;color:var(--dgray);margin-bottom:8px;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--dgray)'">www.daloftaerospace.in</a>
                 <div style="font-size:13px;color:var(--dgray);margin-bottom:8px;">IIT Madras Research Park, Chennai</div>
               </div>
             </div>
