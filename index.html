@@ -170,6 +170,7 @@
     @media (max-width:600px) {
       nav .nav-bar { height: 70px !important; padding: 0 20px !important; }
       nav .nav-logo img { height: 70px !important; margin-left: -8px !important; }
+      .nav-tagline { display: none !important; }
 
       .hero-inner { padding: 80px 16px 48px !important; }
       section { padding: 32px 16px !important; }
@@ -300,8 +301,12 @@
       return `
         <nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,27,45,0.95);backdrop-filter:blur(12px);font-family:var(--fontBody);">
           <div class="nav-bar" style="max-width:1200px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:90px;">
-            <div class="nav-logo" style="cursor:pointer;display:flex;align-items:center;" onclick="goPage('home')">
+            <div class="nav-logo" style="cursor:pointer;display:flex;align-items:center;gap:12px;" onclick="goPage('home')">
               <img src="assets/daloft_trans.png" alt="Daloft Aerospace" style="height:120px;object-fit:contain;display:block;margin-left:-52px;" />
+              <div class="nav-tagline" style="display:flex;flex-direction:column;justify-content:center;line-height:1.4;margin-left:-25px; margin-top: 8px;">
+                <span style="font-family:var(--fontBody);font-size:9px;font-weight:400;color:#9ca3af;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">An IIT Madras Incubated</span>
+                <span style="font-family:var(--fontBody);font-size:9px;font-weight:700;color:#3b82f6;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;">FLIGHT DYNAMICS &amp; CONTROL SYSTEMS</span>
+              </div>
             </div>
             <div class="nav-links" style="display:flex;gap:4px;align-items:center;">
               <button onclick="goPage('home')" style="background:none;border:none;cursor:pointer;padding:8px 16px;font-family:var(--fontBody);font-size:13px;font-weight:600;color:var(--offW);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;">Home</button>
